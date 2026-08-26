@@ -10,6 +10,7 @@ const STORAGE_KEY = 'help_modal_shown';
 // 关闭按钮事件
 closeModalBtn.addEventListener('click', () => {
   helpModal.classList.add('hidden');
+  });
   
 // --- 初始化场景、相机、渲染器 ---
 const scene = new THREE.Scene();
