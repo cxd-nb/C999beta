@@ -2,115 +2,129 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// ===== 场景 =====
-const canvas = document.getElementById('canvas');
+// --- 初始化场景、相机、渲染器 ---
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0f0f1a);
+scene.background = new THREE.Color(0x2a2a2a);
 
-// ===== 相机 =====
 const camera = new THREE.PerspectiveCamera(
-    45, window.innerWidth / window.innerHeight, 0.01, 1000
+  45,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
 );
-camera.position.set(0, 1.5, 4);
+camera.position.set(3, 2, 5);
+camera.lookAt(0, 0, 0);
 
-// ===== 渲染器 =====
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
 
-// ===== 轨道控制器 =====
+// --- 光照系统 ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambientLight);
+
+const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+mainLight.position.set(5, 10, 7);
+mainLight.castShadow = true;
+mainLight.shadow.mapSize.width = 1024;
+mainLight.shadow.mapSize.height = 1024;
+scene.add(mainLight);
+
+const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+fillLight.position.set(-5, 2, -5);
+scene.add(fillLight);
+
+// --- 轨道控制器 ---
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 1.5;
+controls.target.set(0, 0, 0);
+controls.update();
 
-// ===== 灯光 =====
-scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-
-const dirLight = new THREE.DirectionalLight(0xffffff, 2);
-dirLight.position.set(5, 10, 7);
-dirLight.castShadow = true;
-dirLight.shadow.mapSize.set(2048, 2048);
-scene.add(dirLight);
-
-scene.add(new THREE.HemisphereLight(0x4488ff, 0x002244, 0.3));
-
-// ===== 地面圆盘 =====
-const ground = new THREE.Mesh(
-    new THREE.CircleGeometry(5, 64),
-    new THREE.MeshStandardMaterial({ color: 0x222233, roughness: 0.8 })
-);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// ===== 加载 GLB 模型 =====
-const loadingEl = document.getElementById('loading');
+// --- 模型管理 ---
+let currentModel = null; // 当前场景中的模型对象
 const loader = new GLTFLoader();
+const loadingDiv = document.getElementById('loading');
+const modelSelect = document.getElementById('model-select');
 
-loader.load(
-    './models/scene.glb',
+/**
+ * 加载并显示指定路径的模型
+ * @param {string} modelPath - 模型文件路径
+ */
+function loadModel(modelPath) {
+  // 显示加载提示
+  loadingDiv.style.opacity = '1';
+  loadingDiv.textContent = '模型加载中...';
+  
+  // 移除旧模型
+  if (currentModel) {
+    scene.remove(currentModel);
+    currentModel = null;
+  }
+
+  loader.load(
+    modelPath,
     (gltf) => {
-        const model = gltf.scene;
+      // 新模型
+      currentModel = gltf.scene;
+      scene.add(currentModel);
 
-        // 自动居中 & 等比缩放到合适大小
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 3 / maxDim;
+      // 调整相机适配模型
+      const box = new THREE.Box3().setFromObject(currentModel);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      
+      camera.near = maxDim / 100;
+      camera.far = maxDim * 100;
+      camera.updateProjectionMatrix();
 
-        model.scale.setScalar(scale);
-        model.position.sub(center.multiplyScalar(scale));
+      const distance = maxDim * 1.8;
+      camera.position.set(
+        center.x + distance * 0.8,
+        center.y + distance * 0.6,
+        center.z + distance
+      );
+      controls.target.copy(center);
+      controls.update();
 
-        // 开启阴影
-        model.traverse((child) => {
-            if (child.isMesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-            }
-        });
-
-        scene.add(model);
-        loadingEl.style.display = 'none';
-
-        // 播放动画（如果有）
-        if (gltf.animations.length > 0) {
-            const mixer = new THREE.AnimationMixer(model);
-            gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
-            window._animMixer = mixer;
-        }
+      // 隐藏加载提示
+      loadingDiv.style.opacity = '0';
+      setTimeout(() => loadingDiv.textContent = '', 500);
     },
-    (progress) => {
-        if (progress.total > 0) {
-            const pct = ((progress.loaded / progress.total) * 100).toFixed(0);
-            loadingEl.textContent = `加载中... ${pct}%`;
-        }
+    (xhr) => {
+      const percent = xhr.total ? Math.round((xhr.loaded / xhr.total) * 100) : 0;
+      loadingDiv.textContent = `模型加载中... ${percent}%`;
     },
     (error) => {
-        console.error('模型加载失败:', error);
-        loadingEl.textContent = '⚠️ 加载失败，请检查控制台';
+      console.error('模型加载失败:', error);
+      loadingDiv.textContent = '模型加载失败，请检查文件是否存在';
     }
-);
+  );
+}
 
-// ===== 窗口自适应 =====
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+// --- 监听模型选择变化 ---
+modelSelect.addEventListener('change', (event) => {
+  const selectedPath = event.target.value;
+  loadModel(selectedPath);
 });
 
-// ===== 动画循环 =====
-const clock = new THREE.Clock();
+// --- 初始加载第一个模型 ---
+loadModel(modelSelect.value);
+
+// --- 动画循环 ---
 function animate() {
-    requestAnimationFrame(animate);
-    if (window._animMixer) window._animMixer.update(clock.getDelta());
-    controls.update();
-    renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
 }
 animate();
+
+// --- 响应窗口大小变化 ---
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
