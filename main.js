@@ -2,6 +2,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+// ========== 操作提示模态框（首次显示） ==========
+const helpModal = document.getElementById('help-modal');
+const closeModalBtn = document.getElementById('close-modal');
+const STORAGE_KEY = 'help_modal_shown';
+
+// 关闭按钮事件
+closeModalBtn.addEventListener('click', () => {
+  helpModal.classList.add('hidden');
+  
 // --- 初始化场景、相机、渲染器 ---
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x2a2a2a);
