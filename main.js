@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// ========== 操作提示模态框（首次显示） ==========
+// ========== 操作提示模态框 ==========
 const helpModal = document.getElementById('help-modal');
 const closeModalBtn = document.getElementById('close-modal');
 const STORAGE_KEY = 'help_modal_shown';
@@ -12,6 +12,28 @@ closeModalBtn.addEventListener('click', () => {
   helpModal.classList.add('hidden');
   });
   
+// 将相机重置到当前模型的合适视角
+function resetCameraToModel() {
+  if (!currentModel) return;
+
+  const box = new THREE.Box3().setFromObject(currentModel);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  
+  camera.near = maxDim / 100;
+  camera.far = maxDim * 100;
+  camera.updateProjectionMatrix();
+
+  const distance = maxDim * 1.2;
+  camera.position.set(
+    center.x + distance * 1.1,
+    center.y + distance * 1.1,
+    center.z + distance * 1.1
+  );
+  controls.target.copy(center);
+  controls.update();
+}
 // --- 初始化场景、相机、渲染器 ---
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x2a2a2a);
@@ -81,24 +103,8 @@ function loadModel(modelPath) {
       currentModel = gltf.scene;
       scene.add(currentModel);
 
-      // 调整相机适配模型
-      const box = new THREE.Box3().setFromObject(currentModel);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      
-      camera.near = maxDim / 100;
-      camera.far = maxDim * 100;
-      camera.updateProjectionMatrix();
-
-      const distance = maxDim * 1.8;
-      camera.position.set(
-        center.x + distance * 0.8,
-        center.y + distance * 0.6,
-        center.z + distance
-      );
-      controls.target.copy(center);
-      controls.update();
+      // 自动调整相机适配模型
+      resetCameraToModel();
 
       // 隐藏加载提示
       loadingDiv.style.opacity = '0';
@@ -138,3 +144,5 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+// --- 重置视角按钮事件 ---
+document.getElementById('reset-view').addEventListener('click', resetCameraToModel);
