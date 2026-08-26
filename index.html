@@ -8,8 +8,20 @@
 </head>
 <body>
   <div id="loading">模型加载中...</div>
-  <div id="info">左键旋转|滚轮缩放|右键平移</div>
-
+ 
+ <!-- 操作提示模态框（首次显示） -->
+  <div id="help-modal" class="modal">
+    <div class="modal-content">
+      <h2>操作指南</h2>
+      <ul>
+        <li>🖱️ 鼠标拖拽：旋转视角</li>
+        <li>🔍 滚轮：缩放模型</li>
+        <li>✋ 右键拖拽：平移视角</li>
+      </ul>
+      <button id="close-modal">我知道了</button>
+    </div>
+  </div>
+  
   <!-- 模型选择器 -->
   <div id="model-selector">
     <label for="model-select">选择模型：</label>
