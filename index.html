@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Model Viewer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 模型展示</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="info">
-        <h1>3D Model Viewer</h1>
-        <p>拖拽旋转 · 滚轮缩放 · 右键平移</p>
-    </div>
-    <div id="loading">加载中...</div>
-    <canvas id="canvas"></canvas>
+  <div id="loading">模型加载中...</div>
+  <div id="info">🖱️ 鼠标拖拽旋转 | 滚轮缩放 | 右键平移</div>
 
-    <script type="importmap">
+  <!-- 模型选择器 -->
+  <div id="model-selector">
+    <label for="model-select">选择模型：</label>
+    <select id="model-select">
+      <option value="models/model1.glb">模型 1</option>
+      <option value="models/model2.glb">模型 2</option>
+      <option value="models/model3.glb">模型 3</option>
+    </select>
+  </div>
+
+  <!-- 项目地址展示 -->
+  <footer id="project-link">
+    <a href="https://github.com/你的用户名/仓库名" target="_blank" rel="noopener noreferrer">
+      🔗 查看项目源代码
+    </a>
+    <span> | </span>
+    <a href="https://你的项目.pages.dev" target="_blank" rel="noopener noreferrer">
+      🌐 在线演示地址
+    </a>
+  </footer>
+
+  <script type="importmap">
     {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-        }
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
     }
-    </script>
-    <script type="module" src="main.js"></script>
+  </script>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>
