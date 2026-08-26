@@ -1,54 +1,99 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* 全局样式 */
 body {
-    overflow: hidden;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #0f0f1a;
+  margin: 0;
+  overflow: hidden;
+  background: #1a1a1a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#canvas {
-    display: block;
-    width: 100vw;
-    height: 100vh;
+canvas {
+  display: block;
 }
 
+/* 底部操作提示 */
 #info {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    text-align: center;
-    z-index: 10;
-    pointer-events: none;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  pointer-events: none;
+  backdrop-filter: blur(5px);
+  z-index: 10;
 }
 
-#info h1 {
-    font-size: 1.4rem;
-    font-weight: 600;
-}
-
-#info p {
-    font-size: 0.8rem;
-    opacity: 0.6;
-    margin-top: 4px;
-}
-
+/* 加载提示 */
 #loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 1.1rem;
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 12px 24px;
-    border-radius: 8px;
-    transition: opacity 0.3s;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 18px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 12px 24px;
+  border-radius: 30px;
+  transition: opacity 0.5s;
+  z-index: 20;
+}
+
+/* 模型选择器 */
+#model-selector {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  border-radius: 25px;
+  backdrop-filter: blur(5px);
+  color: #fff;
+  font-size: 14px;
+}
+
+#model-selector select {
+  padding: 6px 10px;
+  border-radius: 15px;
+  border: none;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  font-size: 14px;
+}
+
+#model-selector select:hover {
+  background: #444;
+}
+
+/* 项目地址页脚 */
+#project-link {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 15;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  font-size: 14px;
+  color: #fff;
+}
+
+#project-link a {
+  color: #4da6ff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+#project-link a:hover {
+  color: #80c1ff;
+  text-decoration: underline;
 }
