@@ -4,7 +4,7 @@
 
 ## 🌐 在线演示
 
-- **在线预览**：[https://你的项目.pages.dev](https://c999beta.pages.dev/)
+- **在线预览**：[https://c999beta.pages.dev](https://c999beta.pages.dev/)
 
 ## 许可证
 本项目代码采用 MIT License。模型文件可能具有独立版权，请查看模型自身的授权信息。
