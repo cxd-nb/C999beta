@@ -128,8 +128,9 @@ modelSelect.addEventListener('change', (event) => {
   updateAuthor();
 });
 
-// --- 初始加载第一个模型 ---
+// --- 初始化 ---
 loadModel(modelSelect.value);
+updateAuthor();
 
 // --- 更新作者信息 ---
 function updateAuthor() {
