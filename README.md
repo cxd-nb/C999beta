@@ -7,9 +7,11 @@
 - **在线预览**：[https://c999beta.pages.dev](https://c999beta.pages.dev/)
 
 ## 许可证
+
 本项目代码采用 MIT License。模型文件可能具有独立版权，请查看模型自身的授权信息。
 
 ## 致谢
+
 Three.js 社区
 Cloudflare Pages 提供的托管服务
 飞行社创新工坊 提供的模型
