@@ -131,7 +131,20 @@ canvas {
 #model-selector select:hover {
   background: #444;
 }
-
+/* 模型作者信息 */
+#model-author {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #ddd;
+}
+#model-author a {
+  color: #4da6ff;
+  text-decoration: none;
+}
+#model-author a:hover {
+  text-decoration: underline;
+  color: #80c1ff;
+}
 /* 项目地址页脚 */
 #project-link {
   position: absolute;

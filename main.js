@@ -125,10 +125,28 @@ function loadModel(modelPath) {
 modelSelect.addEventListener('change', (event) => {
   const selectedPath = event.target.value;
   loadModel(selectedPath);
+  updateAuthor();
 });
 
 // --- 初始加载第一个模型 ---
 loadModel(modelSelect.value);
+
+// --- 更新作者信息 ---
+function updateAuthor() {
+  const select = document.getElementById('model-select');
+  const selectedOption = select.options[select.selectedIndex];
+  const author = selectedOption.getAttribute('data-author') || '未知作者';
+  const authorUrl = selectedOption.getAttribute('data-author-url') || '';
+  
+  const authorContainer = document.getElementById('model-author');
+  if (authorUrl) {
+    // 有链接：生成 <a> 标签，在新标签页打开
+    authorContainer.innerHTML = `作者：<a href="${authorUrl}" target="_blank" rel="noopener noreferrer">${author}</a>`;
+  } else {
+    // 无链接：显示纯文本
+    authorContainer.textContent = `作者：${author}`;
+  }
+}
 
 // --- 动画循环 ---
 function animate() {
@@ -146,3 +164,4 @@ window.addEventListener('resize', () => {
 });
 // --- 重置视角按钮事件 ---
 document.getElementById('reset-view').addEventListener('click', resetCameraToModel);
+
