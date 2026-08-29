@@ -25,11 +25,11 @@ function resetCameraToModel() {
   camera.far = maxDim * 100;
   camera.updateProjectionMatrix();
 
-  const distance = maxDim * 1.2;
+  const distance = maxDim * 0.9;
   camera.position.set(
-    center.x + distance * 1.1,
-    center.y + distance * 1.1,
-    center.z + distance * 1.1
+    center.x + distance * 0.9,
+    center.y + distance * 0.9,
+    center.z + distance * 0.9
   );
   controls.target.copy(center);
   controls.update();
@@ -54,19 +54,23 @@ renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
 // --- 光照系统 ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
 
-const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
-mainLight.position.set(5, 10, 7);
+const mainLight = new THREE.DirectionalLight(0xffe7cc, 1.2);
+mainLight.position.set(10, 5, 0);
 mainLight.castShadow = true;
 mainLight.shadow.mapSize.width = 1024;
 mainLight.shadow.mapSize.height = 1024;
 scene.add(mainLight);
-
-const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
-fillLight.position.set(-5, 2, -5);
+const fillLight = new THREE.DirectionalLight(0xffffff, 0.9);
+fillLight.position.set(-5, -10, -50);
 scene.add(fillLight);
+
+const fillLight2= new THREE.DirectionalLight(0xffffff, 0.9);
+fillLight2.position.set(-5, 5, 5);
+scene.add(fillLight2);
+
 
 // --- 轨道控制器 ---
 const controls = new OrbitControls(camera, renderer.domElement);
